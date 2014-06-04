@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!-- привет -->
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>Ride 2048</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+    <h1 class="ride-title">Ride 2048</h1>
+    <ul id="score" class="ride-score">
+        <li class="ride-score-block ride-score-current">
+            <div class="ride-score-value"></div>
+        </li>
+        <li class="ride-score-block ride-score-best">
+            <div class="ride-score-value"></div>
+        </li>
+    </ul>
+    <div id="game-container" class="ride-container">
+        <ul class="ride-rows">
+            <li class="ride-row"></li><li class="ride-row"></li><li class="ride-row"></li><li class="ride-row"></li><li class="ride-row"></li>
+        </ul>
+        <div class="ride-tiles"></div>
+    </div>
+    <div class="ride-menu">
+        <div class="ride-menu-inner">
+            <p class="ride-menu-gameover-text">You couldn't make it...<br>Don't give up and try again!</p>
+            <div class="ride-button ride-button-newgame" id="ride-button-newgame" onclick="app.gameRestart();">New game</div>
+            <div class="ride-button ride-button-resume" id="ride-button-resume" onclick="if (app.isOver) { app.gameRestart(); } else { app.resume(); }">Continue</div>
+        </div>
+    </div>
+    <p>
+        It's just like the original <a href="http://gabrielecirulli.github.io/2048/" target="_blank">2048</a> game by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli</a>. But let's add some time pressure! And use some gravitation. New tiles falls down from top of the game field.<br>
+    </p>
+    <p>
+        <strong>How to play:</strong> Use <strong>left</strong> and <strong>right</strong> arrow keys to move tiles in the bottom. <!-- Or you can use <strong>swipe</strong> gestures to perform that on your fancy fruity device. -->
+    </p>
+    <link rel="stylesheet" href="css/clearsans.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        (function () {
+            var app = window.app = new ride2048.App({
+                inputManagers: [
+                    new ride2048.KeyboardInputManager(),
+                    new ride2048.TouchInputManager()/*,
+                    new ride2048.RandomInputManager({ cooldown: 0 })*/
+                ],
+                renderer: new ride2048.HTMLRenderer({
+                    container: '#game-container'
+                }),
+                scoreManager: new ride2048.HTMLScoreManager({
+                    container: '#score'
+                }),
+                dataManager: new ride2048.LocalStorageDataManager(),
+                init: function () {
+                    ride2048.App.prototype.init.apply(this, arguments);
+                    window.addEventListener('blur', this.blurHandler);
+
+                    this.renderer.$container.addClass('is-paused is-over');
+                },
+                destroy: function () {
+                    ride2048.App.prototype.destroy.apply(this, arguments);
+                    window.removeEventListener('blur', this.blurHandler);
+                },
+                onBlur: function () {
+                    this.pause();
+                },
+                resume: function () {
+                    ride2048.App.prototype.resume.apply(this, arguments);
+
+                    this.renderer.$container.removeClass('is-paused is-over');
+
+                    if ($(window).width() <= 420) {
+                        var offset = this.renderer.$container.offset(),
+                            height = 495,
+                            clientHeight = $(window).height(),
+                            scrollY = $(window).scrollTop();
+                        if (offset.top - scrollY < 0 || offset.top + height > clientHeight) {
+                            var scrollOffset = (offset.top - scrollY < 0) ? 10 : -10;
+                            scrollY = offset.top + height - clientHeight;
+                            $(window).scrollTop(Math.max(scrollY, 10) + scrollOffset);
+                            $('html, body').animate({
+                                scrollTop: scrollY
+                            }, 100);
+                        }
+                    }
+                },
+                pause: function () {
+                    ride2048.App.prototype.pause.apply(this, arguments);
+
+                    this.renderer.$container.addClass('is-paused');
+                },
+                gameOver: function () {
+                    ride2048.App.prototype.gameOver.apply(this, arguments);
+
+                    this.renderer.$container.addClass('is-over');
+                },
+                syncLoad: function () {
+                    ride2048.App.prototype.syncLoad.apply(this, arguments);
+
+                    var data = this.dataManager.load();
+                    if (!data || !this.isOver) {
+                        this.renderer.$container.removeClass('is-over');
+                    }
+                }
+            });
+            app.blurHandler = app.onBlur.bind(app);
+
+            app.syncLoad();
+        })();
+    </script>
+</body>
+</html>
