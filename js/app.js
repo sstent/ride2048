@@ -375,63 +375,6 @@
                 }
             }
         },
-        /*handleCollisions: function () {
-            for (var i = 0, l = this.objs.length, obj; i < l; ++i) {
-                obj = this.objs[i];
-
-                if (obj.state != this.states.falling && obj.state != this.states.grounded) continue;
-
-                if (obj.state == this.states.grounded) {
-                    for (var ii = 0, obj2; ii < l; ++ii) {
-                        if (i == ii) continue;
-
-                        obj2 = this.objs[ii];
-
-                        if (obj2.state != this.states.falling && obj.state != this.states.grounded) continue;
-
-                        var dY = Math.abs(obj._y - obj2._y);
-                        if (obj._row == obj2._row &&
-                            dY <= this.cellSize) {
-                            if (obj.val == obj2.val && (dY <= this.cellMargin || obj.row != obj._row)) {
-                                switch (obj2.state) {
-                                    case this.states.falling:
-                                        this.consume(obj, obj2);
-                                        break;
-                                    case this.states.grounded:
-                                        if (obj2.row != obj2._row) {
-                                            this.consume(obj, obj2);
-                                        } else if (obj.row != obj._row) {
-                                            this.consume(obj2, obj);
-                                        }
-                                }
-                            } else {
-                                switch (obj2.state) {
-                                    case this.states.falling:
-                                        if (obj.row == obj._row) {
-                                            obj2.y = obj2._y = obj._y - this.cellSize - this.cellMargin;
-                                            this.setState(obj2, this.states.grounded);
-                                        } else {
-                                            obj._row = obj.row;
-                                        }
-                                        break;
-                                    case this.states.grounded:
-                                        if (obj2.row != obj2._row) {
-                                            obj2._row = obj2.row;
-                                        } else if (obj.row != obj._row) {
-                                            obj._row = obj.row;
-                                        }
-                                        break;
-                                }
-                            }
-                            
-                        }
-                    }
-                }
-
-                obj.row = obj._row;
-                obj.y = obj._y;
-            }
-        },*/
         handleChainedCollisions: function () {
             // we're going until pre-last element because the most top row of objects can't consume anything
             for (var i = 0, il = this.grid.length - 1, line, obj, obj2; i < il; ++i) {
@@ -449,20 +392,6 @@
                     }
                 }
             }
-            /*for (var i = 0, l = this.objs.length, obj; i < l; ++i) {
-                obj = this.objs[i];
-                if (obj.state == this.states.grounded && !obj.consuming) {
-                    for (var ii = 0, obj2; ii < l; ++ii) {
-                        if (i == ii) continue;
-
-                        obj2 = this.objs[ii];
-
-                        if (obj2.state == this.states.grounded && !obj2.consuming && obj.val == obj2.val && obj.row == obj2.row && obj.y == obj2.y + this.cellSize + this.cellMargin) {
-                            this.consume(obj, obj2);
-                        }
-                    }
-                }
-            }*/
         },
         handleGroundedFalls: function () {
             for (var row = 0, obj; row < this.rows; ++row) {
@@ -507,25 +436,6 @@
                     }
                 }
             }
-            /*for (var i = 0, l = this.objs.length, obj, canFall; i < l; ++i) {
-                obj = this.objs[i];
-                canFall = obj.state == this.states.grounded && !obj.consuming && (obj.y + this.cellSize < this.height);
-                if (canFall) {
-                    for (var ii = 0, obj2; ii < l; ++ii) {
-                        if (i == ii) continue;
-
-                        obj2 = this.objs[ii];
-
-                        if (obj2.state == this.states.grounded && obj.row == obj2.row && obj.y + this.cellSize + this.cellMargin == obj2.y) {
-                            canFall = false;
-                            break;
-                        }
-                    }
-                }
-                if (canFall) {
-                    obj._y = obj.y = obj.y + this.cellSize + this.cellMargin;
-                }
-            }*/
         },
         handleGameOver: function () {
             for (var i = 0, l = this.objs.length, obj, canFall; i < l; ++i) {
