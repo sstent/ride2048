@@ -45,8 +45,8 @@
         scoreManager: null,
         dataManager: null,
         defaults: {
-            speed: 200, // Cells fall speed in pixels per second
-            spawnRate: 2 // One spawn per N seconds
+            speed: 150, // Cells fall speed in pixels per second
+            spawnRate: 3 // One spawn per N seconds
         },
         speedInc: 1.01, // Percents to add to speed after each collision
         spawnRateInc: 0.99, // Percents to add to spawn rate after each collision
