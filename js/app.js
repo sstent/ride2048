@@ -40,6 +40,7 @@
         cellMargin: 10,
         rows: 5,
         height: 620,
+        maxFPS: 60,
         inputManagers: null,
         renderer: null,
         scoreManager: null,
@@ -130,6 +131,32 @@
         getWorldY: function (gridY) {
             return this.height - gridY * (this.cellSize + this.cellMargin) - this.cellSize;
         },
+        requestAnimationFrame: (function () {
+            var fn = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+            var T = this;
+            if (fn) {
+                return function (callback) {
+                    return fn(callback);
+                }
+            } else {
+                return function (callback) {
+                    return setTimeout(callback, 1000 / T.maxFPS);
+                }
+            }
+        })(),
+        cancelAnimationFrame: (function () {
+            var fn = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
+            if (fn) {
+                return function (id) {
+                    return fn(id);
+                }
+            } else {
+                return function (id) {
+                    return clearTimeout(id);
+                }
+            }
+            return fn;
+        })(),
         resume: function () {
             if (this.isPaused && !this.isOver) {
                 this.isPaused = false;
@@ -142,11 +169,11 @@
                             dt = (newTime - time) / 1000;
                             T.update(dt);
                             time = newTime;
-                        T._requestAnimationFrameId = window.requestAnimationFrame(update);
+                        T._requestAnimationFrameId = T.requestAnimationFrame(update);
                     }
                 };
 
-                this._requestAnimationFrameId = window.requestAnimationFrame(update);
+                this._requestAnimationFrameId = this.requestAnimationFrame(update);
 
                 this.syncSave();
 
@@ -156,7 +183,7 @@
         pause: function () {
             if (!this.isPaused) {
                 this.isPaused = true;
-                window.cancelAnimationFrame(this._requestAnimationFrameId);
+                this.cancelAnimationFrame(this._requestAnimationFrameId);
                 
                 this.syncSave();
 
