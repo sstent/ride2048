@@ -81,6 +81,7 @@
                     this.inputManagers[i].init();
                 }
             }
+            this.disableInputs();
 
             if (this.renderer) {
                 this.renderer.init();
