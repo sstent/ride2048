@@ -81,6 +81,7 @@
                     this.inputManagers[i].init();
                 }
             }
+            this.disableInputs();
 
             if (this.renderer) {
                 this.renderer.init();
@@ -465,7 +466,7 @@
             }
         },
         handleGameOver: function () {
-            for (var i = 0, l = this.objs.length, obj, canFall; i < l; ++i) {
+            for (var i = 0, l = this.objs.length, obj; i < l; ++i) {
                 obj = this.objs[i];
                 
                 if (obj.state == this.states.grounded && obj.y <= 0) {
