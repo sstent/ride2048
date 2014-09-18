@@ -49,9 +49,9 @@
             speed: 150, // Cells fall speed in pixels per second
             spawnRate: 3 // One spawn per N seconds
         },
-        speedInc: 1.00, // Percents to add to speed after each collision
+        speedInc: 1.001, // Percents to add to speed after each collision
         spawnRateInc: 0.99, // Percents to add to spawn rate after each collision
-        maxSpeed: 2000, // Max fall speed
+        maxSpeed: 600, // Max fall speed
         maxSpawnRate: 0.3, // Max spawn rate
         maxSpawnValue: 128, // Max cell value that can be spawned
         consumeDuration: 0.2, // Speed of consuming one cell by another in seconds
